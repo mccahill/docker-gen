@@ -1,0 +1,7 @@
+#!/usr/bin/csh
+#
+# stop and remove any containers that exist
+#
+foreach container (`docker ps -q -a`)
+  docker stop $container
+end

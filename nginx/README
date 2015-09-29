@@ -1,0 +1,10 @@
+This directory is where we put the config file that nginx uses to do proxying
+and SSL termination. 
+
+While there is a default.conf file here, you are probably going to have this 
+overwritten if you are running the docker-gen container, because docker-gen uses 
+a template to dynamically generate the config file in response to other containers 
+being started and stopped.
+
+Note that the default html is in the html sub directory and the ssl directory
+is where you probably want to stash your site certificates

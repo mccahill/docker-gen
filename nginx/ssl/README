@@ -1,0 +1,31 @@
+you need three certificate files in this directory
+1.) server.crt
+
+signed cert for the server. If you use a Comodo cert paste the
+cert at the top of the certificate chain and put that here
+
+2.) server.key
+
+private key for the server
+
+3.) dhparam.pem  
+
+Getting stronger than default Diffie/Hellman key exchange parameter is
+required for to do good forward security. To generate this run, and wait a long
+time for the file to be generated
+
+    openssl dhparam -out dhparam.pem 4096
+
+For details see
+
+    https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+
+    https://cipherli.st
+
+and verify that the settings are right by using the report card at
+
+    https://www.ssllabs.com/
+
+
+
+

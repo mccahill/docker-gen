@@ -1,0 +1,2 @@
+PWD=pwd
+sudo docker run -d --volumes-from nginx -v /var/run/docker.sock:/tmp/docker.sock -v $PWD/nginx-templates:/etc/docker-gen/templates -t docker-gen -notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf

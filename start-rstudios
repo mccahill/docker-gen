@@ -1,0 +1,38 @@
+#!/usr/bin/csh
+#
+# set up some variable we will use later
+#
+$PWD=pwd
+$HOSTNAME=hostname
+#
+# stop and remove any containers that exist
+#
+foreach container (`docker ps -q -a`)
+  docker stop $container
+  docker rm  $container
+end
+#
+# start the nginx container
+#
+docker run -d -p 80:80 -p 30000-31000:30000-31000 --name nginx -v $PWD/nginx/:/etc/nginx/conf.d -t nginx
+#
+# start the docker-gen container
+#
+docker run -d --volumes-from nginx -v /var/run/docker.sock:/tmp/docker.sock -v $PWD/nginx-templates:/etc/docker-gen/templates -t docker-gen -notify-sighup nginx -watch -only-exposed /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
+#
+# start all the rstudio containers
+# walk the mapping file to get ports and passwords to start containers for each
+#
+foreach line (`cat $PWD/mapping-example`)
+  set split = ($line:as/,/ /)
+  set PORT = $split[1] 
+  set PW = $split[2]
+  echo $HOSTNAME:30$PORT
+  docker run -d -p 127.0.0.1::8787 -e USERPASS=$PW \
+    --name 30$PORT \
+    -e VIRTUAL_HOST=$HOSTNAME:30$PORT \
+    -e MAP_VIRTUAL_PORT=30$PORT \
+    -v $PWD/homedirs/user$PORT\:/home/guest \
+    -i -t r-studio
+  sleep 3
+end
