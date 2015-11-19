@@ -1,1 +1,1 @@
-docker build -t="docker-gen" .
+sudo docker build -t="docker-gen" .
