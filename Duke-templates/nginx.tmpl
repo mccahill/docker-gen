@@ -57,6 +57,15 @@ upstream {{ $host }} {
 	{{ end }}
 }
 
+#
+# setting to enable shiny and addins (part1)
+#
+map $http_upgrade $connection_upgrade {
+      default upgrade;
+      ''      close;
+    }
+# end setting to enable shiny and addins (part1)
+
 server {
         listen {{ $mapvport }} default_server;
 	server_name {{ $host }};
@@ -87,6 +96,14 @@ server {
 
 	location / {
 		proxy_pass http://{{ $backendIP }}:{{ $backendPort }}/;
+                #
+                # setting to enable shiny and addins (part 2)
+                #
+                proxy_redirect http://{{ $backendIP }}:{{ $backendPort }}/ $scheme://$host/;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                # end setting to enable shiny and addins (part 2)
+
                 # settings to allow big file uploads
                 client_max_body_size 100M;
                 proxy_read_timeout 1200;
